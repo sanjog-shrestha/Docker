@@ -31,6 +31,5 @@ Local directories can be mounted to allow real-time editing of static content wi
 ## Steps
 
 🖥️ Ref 1: Static Website Creation
-![image]
-
+<img width="749" height="411" alt="Image" src="https://github.com/user-attachments/assets/05b22f23-2a99-4acb-b672-cca7f9c6e807" />
 The project began by creating a simple static website using HTML. This website would later be served inside an Nginx container. The file structure was kept minimal to focus on Docker and Nginx deployment.
