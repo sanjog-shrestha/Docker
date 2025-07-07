@@ -62,3 +62,13 @@ This started a detached container named my-static-site with port mapping from ho
   http://localhost:8080 (from host)
 
   http://192.168.1.121:8080 (from LAN)
+  
+📊 Ref 5: Website Results
+
+Once the container was up, the static website became accessible via browser.
+
+✔️ All HTML and CSS loaded correctly
+✔️ The site was responsive and viewable from other devices on the LAN
+✔️ Verified that the site runs entirely inside the container
+
+<img width="1917" height="472" alt="Image" src="https://github.com/user-attachments/assets/d3be5255-3553-45a0-9912-f09a51ff9435" />
