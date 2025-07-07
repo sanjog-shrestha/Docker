@@ -57,3 +57,34 @@ docker-compose.yml was created to spin up both the backend and the mongo service
 🚀 Ref 4: Running the App
 To launch the full application, the following command was executed from the project root:
 
+![Image](https://github.com/user-attachments/assets/856d8eb8-f27e-4491-bb3e-f9b207566a92)
+
+Result:
+
+- Node backend running at: http://localhost:3000
+- MongoDB running internally at: mongo:27017
+
+🔍 Ref 5: API Testing
+
+📍 Accessible Endpoints:
+
+- GET http://localhost:3000/todos — fetches all todos.
+- POST http://localhost:3000/todos — creates a new todo.
+
+Test Example
+![Image](https://github.com/user-attachments/assets/fb9e6b5e-1645-495e-9ca9-88d725d820f7)
+
+![Image](https://github.com/user-attachments/assets/8e65c3e9-e5c5-4de6-a743-0e787db33477)
+
+📊 Ref 6: Result Verification
+
+Once containers were running:
+- API requests were successfully served from the backend
+- Todos were saved and retrieved from the MongoDB container
+- Data persisted via Docker volume even after stopping containers
+- Verified container communication and port exposure
+
+✅ Outcome
+- Successfully containerized and deployed a multi-tier Node.js + MongoDB app using Docker Compose.
+- Demonstrated inter-container communication, persistent storage, and local development best practices.
+- Built a strong foundation for future full-stack Docker projects, and set the stage for frontend integration or cloud deployment.
