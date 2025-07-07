@@ -31,3 +31,14 @@ Used to test the REST API endpoints from the host.
 Base platform to run Docker containers and access exposed APIs on http://localhost.
 
 ## Steps
+
+🛠️ Ref 1: Backend App Creation
+
+The project started by building a basic Express.js backend for managing to-do items. It connects to MongoDB, exposes two routes (/todos GET & POST), and uses Mongoose for database operations.
+
+⚙️ Ref 2: Dockerfile and Image Build
+
+To containerize the backend app, a custom Dockerfile was created.
+
+📄 backend/Dockerfile:
+![Image](https://github.com/user-attachments/assets/5419ab9f-4d56-4fdc-baff-fbb7114b77da)
