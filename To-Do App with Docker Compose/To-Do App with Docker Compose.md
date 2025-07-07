@@ -25,8 +25,8 @@ Utilized to build images, spin up containers, and orchestrate multi-service appl
 A lightweight backend framework used to create the to-do API.
 - MongoDB (Docker Image):
 Acts as the data store for the to-do application.
-- Postman / curl:
-Used to test the REST API endpoints from the host.
+- PowerShell (Invoke-RestMethod):
+Used to test the REST API endpoints directly from the Windows host:
 - Windows 11 Host:
 Base platform to run Docker containers and access exposed APIs on http://localhost.
 
@@ -43,3 +43,17 @@ To containerize the backend app, a custom Dockerfile was created.
 📄 backend/Dockerfile:
 
 ![Image](https://github.com/user-attachments/assets/5419ab9f-4d56-4fdc-baff-fbb7114b77da)
+
+🧩 Ref 3: Docker Compose Orchestration
+
+docker-compose.yml was created to spin up both the backend and the mongo services.
+
+📄 docker-compose.yml:
+
+![image](https://github.com/user-attachments/assets/2c4b52a5-2e01-4f3b-8a70-74fe0de028df)
+
+✅ This setup allows the backend container to connect to the mongo service via hostname mongo.
+
+🚀 Ref 4: Running the App
+To launch the full application, the following command was executed from the project root:
+
