@@ -35,23 +35,21 @@ A docker-compose.yml file was created to define both the MySQL and Adminer servi
 
 <img width="1557" height="811" alt="Image" src="https://github.com/user-attachments/assets/e2d7dd24-c9a6-4be8-bc4e-c3cbcca002ac" />
 
-⚙️ Ref 2: Dockerfile and Image Build
+⚙️ Ref 2: Running the Containers
 
-To containerize the backend app, a custom Dockerfile was created.
+The following command was executed from the project root to launch both containers:
 
-📄 backend/Dockerfile:
+<img width="1900" height="680" alt="Image" src="https://github.com/user-attachments/assets/ecbdda89-1c0e-4842-80b2-6c8a0ea932c9" />
 
-![Image](https://github.com/user-attachments/assets/5419ab9f-4d56-4fdc-baff-fbb7114b77da)
+🟢 Result:
+- MySQL service starts at internal port 3306
+- Adminer UI available at http://localhost:8080
 
-🧩 Ref 3: Docker Compose Orchestration
+🌐 Ref 3: Accessing Adminer
 
-docker-compose.yml was created to spin up both the backend and the mongo services.
+With Adminer running, it was accessed via browser:
 
-📄 docker-compose.yml:
-
-![image](https://github.com/user-attachments/assets/2c4b52a5-2e01-4f3b-8a70-74fe0de028df)
-
-✅ This setup allows the backend container to connect to the mongo service via hostname mongo.
+📍 http://localhost:8080
 
 🚀 Ref 4: Running the App
 To launch the full application, the following command was executed from the project root:
