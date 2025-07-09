@@ -51,38 +51,29 @@ With Adminer running, it was accessed via browser:
 
 📍 http://localhost:8080
 
-🚀 Ref 4: Running the App
-To launch the full application, the following command was executed from the project root:
+<img width="963" height="490" alt="Image" src="https://github.com/user-attachments/assets/1d4b3b75-d86d-4747-9622-ff37ab61e0dd" />
 
-![Image](https://github.com/user-attachments/assets/856d8eb8-f27e-4491-bb3e-f9b207566a92)
+<img width="1915" height="758" alt="Image" src="https://github.com/user-attachments/assets/df4ce70a-6438-44bd-b40f-aa2268cf415d" />
 
-Result:
+Login Configuration:
+- System: MySQL
+- Server: db (Docker service name, resolved internally)
+- Username: user123
+- Password: pass123
+- Database: sampledb
 
-- Node backend running at: http://localhost:3000
-- MongoDB running internally at: mongo:27017
+📊 Ref 4: Result Verification
 
-🔍 Ref 5: API Testing
-
-📍 Accessible Endpoints:
-
-- GET http://localhost:3000/todos — fetches all todos.
-- POST http://localhost:3000/todos — creates a new todo.
-
-Test Example
-![Image](https://github.com/user-attachments/assets/fb9e6b5e-1645-495e-9ca9-88d725d820f7)
-
-![Image](https://github.com/user-attachments/assets/8e65c3e9-e5c5-4de6-a743-0e787db33477)
-
-📊 Ref 6: Result Verification
-
-Once containers were running:
-- API requests were successfully served from the backend
-- Todos were saved and retrieved from the MongoDB container
-- Data persisted via Docker volume even after stopping containers
-- Verified container communication and port exposure
+✅ Successful verification included:
+- Adminer connected to the MySQL container via service name db
+- Test tables and entries were created through Adminer UI
+- Data persisted across docker-compose down and up (volume verification)
+- Adminer allowed full CRUD operations on the sampledb
 
 ✅ Outcome
-- Successfully containerized and deployed a multi-tier Node.js + MongoDB app using Docker Compose.
-- Demonstrated inter-container communication, persistent storage, and local development best practices.
-- Built a strong foundation for future full-stack Docker projects, and set the stage for frontend integration or cloud deployment.
+- Deployed and configured a basic database stack using Docker Compose.
+- Demonstrated inter-container networking, volume persistence, and service orchestration.
+- Set the stage for future back-end or data-driven projects that rely on relational databases.
+- Built a foundation for integrating MySQL with other containerized services (Node.js, PHP, etc.).
+
 
