@@ -51,10 +51,6 @@ With Adminer running, it was accessed via browser:
 
 📍 http://localhost:8080
 
-<img width="963" height="490" alt="Image" src="https://github.com/user-attachments/assets/1d4b3b75-d86d-4747-9622-ff37ab61e0dd" />
-
-<img width="1915" height="758" alt="Image" src="https://github.com/user-attachments/assets/df4ce70a-6438-44bd-b40f-aa2268cf415d" />
-
 Login Configuration:
 - System: MySQL
 - Server: db (Docker service name, resolved internally)
@@ -66,7 +62,14 @@ Login Configuration:
 
 ✅ Successful verification included:
 - Adminer connected to the MySQL container via service name db
+
+  <img width="963" height="490" alt="Image" src="https://github.com/user-attachments/assets/1d4b3b75-d86d-4747-9622-ff37ab61e0dd" />
+
+  <img width="1915" height="758" alt="Image" src="https://github.com/user-attachments/assets/df4ce70a-6438-44bd-b40f-aa2268cf415d" />
+
 - Test tables and entries were created through Adminer UI
+  <img width="1913" height="716" alt="Image" src="https://github.com/user-attachments/assets/fb989539-37a0-454d-b755-77c9ac49af68" />
+  
 - Data persisted across docker-compose down and up (volume verification)
 - Adminer allowed full CRUD operations on the sampledb
 
