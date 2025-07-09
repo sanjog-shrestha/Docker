@@ -68,9 +68,16 @@ Login Configuration:
   <img width="1915" height="758" alt="Image" src="https://github.com/user-attachments/assets/df4ce70a-6438-44bd-b40f-aa2268cf415d" />
 
 - Test tables and entries were created through Adminer UI
-  <img width="1913" height="716" alt="Image" src="https://github.com/user-attachments/assets/fb989539-37a0-454d-b755-77c9ac49af68" />
+  <img width="1572" height="348" alt="Image" src="https://github.com/user-attachments/assets/000fae2b-422f-4b61-865f-1f76cf27376d" />
+  
+  <img width="1408" height="541" alt="Image" src="https://github.com/user-attachments/assets/e47a9dca-6b80-40be-ae50-f72214b83d1c" />
+
+  <img width="1061" height="623" alt="Image" src="https://github.com/user-attachments/assets/4940c0e9-20ad-4c98-9dda-1d3719454065" />
   
 - Data persisted across docker-compose down and up (volume verification)
+
+  ![image](https://github.com/user-attachments/assets/df1d85d6-a44a-4538-8b97-d13b3c0dde8b)
+
 - Adminer allowed full CRUD operations on the sampledb
 
 ✅ Outcome
