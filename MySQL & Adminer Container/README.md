@@ -17,7 +17,7 @@ The objective of this project was to deploy a MySQL database alongside a lightwe
 
 - Docker Desktop (Windows):
 Used to run and manage containerized via GUI & CLI
-- Docker CDocker Compose:
+- Docker Compose:
 Automates multi-container setup & teardown
 - MySQL (Docker Image):
 Relational database container
