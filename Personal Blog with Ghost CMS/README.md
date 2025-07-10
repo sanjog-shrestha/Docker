@@ -62,10 +62,16 @@ Ghost was accessed via browser at:
 - Ghost CMS setup completed successfully via web UI
 <img width="887" height="830" alt="Image" src="https://github.com/user-attachments/assets/64595db8-9bed-44fe-854f-d98c01969aea" />
 - Blog dashboard accessible and fully functional
+  
 ![image](https://github.com/user-attachments/assets/a6629f3e-77bb-4f2b-9567-cd985e81075d)
+
 - Posts created & published from the admin panel:
+  
 ![image](https://github.com/user-attachments/assets/f02a55d7-7a7e-4c9d-974d-e4e1e67f0276)
+
 - Themes customized, images uploaded, & routing validated
+  
 ![image](https://github.com/user-attachments/assets/a08561f5-6d33-448f-bc5d-759dc3527c0a)
+
 ![image](https://github.com/user-attachments/assets/559514a4-1bcc-4874-b1ab-2e758ec64743)
 
