@@ -75,3 +75,21 @@ Ghost was accessed via browser at:
 
 ![image](https://github.com/user-attachments/assets/559514a4-1bcc-4874-b1ab-2e758ec64743)
 
+- Data stored in ./content and MySQL volume confirmed persistence
+  
+![image](https://github.com/user-attachments/assets/0ec5870f-317f-43a6-a9d4-2b75c29809eb)
+
+![image](https://github.com/user-attachments/assets/8f5e094d-1dc0-4253-8038-3b235bf5c8dd)
+
+![image](https://github.com/user-attachments/assets/dcd37c8e-a27a-4210-b570-b23073e0060b)
+
+![image](https://github.com/user-attachments/assets/508444c8-f52a-4c0d-9f2a-05bf81b49dd8)
+
+
+✅ Outcome
+- Deployed a full-featured, database-backed blogging CMS using Docker Compose
+- Demonstrated Docker networking between Ghost and MySQL via service names
+- Ensured persistent data through named volumes
+- Built a foundation for future enhancements like reverse proxy (Nginx), SSL, backups, or deployment to cloud platforms
+- Learned Docker fundamentals critical for deploying real-world CMS or web apps in production environments
+
