@@ -50,3 +50,15 @@ This pulled the Ghost image, created the necessary volume, and started the conta
 - MySQL started on Docker internal port 3306
 - Ghost CMS became accessible at:
 📍 http://localhost:2368
+🌐 Ref 3: Accessing the Ghost Blog
+
+Ghost was accessed via browser at:
+
+📍 http://localhost:2368
+
+📝 Ghost prompted the admin to configure:
+- Admin email
+- Blog title
+- Username/password
+
+All this data was stored in the MySQL container.
