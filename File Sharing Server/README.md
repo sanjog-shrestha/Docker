@@ -1,4 +1,4 @@
-## MySQL & Adminer Container
+## File Sharing Server
 
 ## Objective
 
@@ -30,7 +30,7 @@ Host system for running the project locally
 
 A docker-compose.yml file was created to define the FileBrowser service, with a persistent volume and mapped file directory on the Windows host:
 
-<img width="557" height="432" alt="image" src="https://github.com/user-attachments/assets/c62915e5-526d-4278-aff0-271f7c510473" />
+<img width="687" height="437" alt="image" src="https://github.com/user-attachments/assets/e288f9be-7f69-4cbe-bda8-483a90ee40bc" />
 
 📁 The host directory SharedFiles was created to store files shared through FileBrowser.
 ⚙️ Ref 2: Running the Container
