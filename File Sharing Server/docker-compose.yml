@@ -1,0 +1,13 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    ports:
+      - "8080:80"
+    volumes:
+      - C:/docker123/SharedFiles:/srv
+      - filebrowser_config:/config 
+    restart: unless-stopped
+
+volumes:
+  filebrowser_config:
