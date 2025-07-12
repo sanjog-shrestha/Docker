@@ -145,18 +145,31 @@ Tested:
 Browser output for https://localhost:8443/app1/ showed Apache welcome page.
 
 ## 🧑‍💻 Ref 8: Project Screenshots (Placeholder)
-<img width="900" src="https://dummyimage.com/900x400/333/fff.png&text=NGINX+Proxy+Path+Routing+Demo" /> <img width="900" src="https://dummyimage.com/900x400/555/fff.png&text=HTTPS+SSL+Certificate+Warning+(Expected)" /> <img width="900" src="https://dummyimage.com/900x400/111/fff.png&text=Reverse+Proxy+Architecture+Diagram" />
+- Browser Access to App1 via HTTPS
+  
+  <img width="1917" height="745" alt="image" src="https://github.com/user-attachments/assets/8f9f9dc4-539f-47fe-9c38-ec7231164b95" />
+
+- Browser Access to App2 via HTTPS
+
+  <img width="920" height="576" alt="image" src="https://github.com/user-attachments/assets/6ee194eb-e2a7-4c24-9987-843f58564623" />
+
+- NGINX Proxy Routing in Action
+
+  <img width="1895" height="522" alt="image" src="https://github.com/user-attachments/assets/819a40ee-c629-48b3-ae05-78a5021649ca" />
+
+- Directory Structure
+
+  <img width="437" height="332" alt="image" src="https://github.com/user-attachments/assets/108330b8-3269-4f8c-8a5a-548891de815c" />
+
+- OpenSSL Certificate Generation
+
+  <img width="925" height="351" alt="image" src="https://github.com/user-attachments/assets/81e92e9b-fce4-46fa-a2e6-26cf80bc9d2f" />
+
 ✅ Outcome
-
-    Fully working reverse proxy setup with HTTPS using only local resources
-
-    Simulated realistic DevOps networking configuration for microservice routing
-
-    Configurable and extensible for:
-
-        Path- or domain-based routing
-
-        External certs (Let's Encrypt, etc.)
-
-        Adding authentication or caching
+- Fully working reverse proxy setup with HTTPS using only local resources
+- Simulated realistic DevOps networking configuration for microservice routing
+- Configurable and extensible for:
+  - Path- or domain-based routing
+  - External certs (Let's Encrypt, etc.)
+  - Adding authentication or caching
 
