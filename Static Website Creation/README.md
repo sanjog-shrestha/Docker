@@ -102,6 +102,32 @@ Purpose: Shows the manual config needed to make Nginx serve both HTTP and HTTPS 
             index index.html;
         }
     }
+    
+## 🚀 Ref 5: Container Execution
+
+Purpose: This is the final command to launch the container. It maps HTTP (8080) and HTTPS (8443) ports from the host to the container and starts it in the background.
+
+    docker run -d \
+      --name my-static-site-https \
+      -p 8080:80 \
+      -p 8443:443 \
+      my-static-site-https
+
+📍 Accessible At
+
+Purpose: Where and how the container can be accessed once it's up and running.
+
+- http://localhost:8080 (redirects to HTTPS)
+- https://localhost:8443 (secured site)
+
+## 📊 Ref 6: Website Results
+
+Purpose: Summary of observable behaviors to confirm everything works.
+- ✅ All HTML and CSS loaded correctly
+- ✅ HTTP requests redirected to HTTPS
+- ✅ Accessible from other devices on the same LAN
+- ✅ TLS padlock warning shown (expected with self-signed cert)
+- ✅ Container runs independently and serves content securely
 
 ## Screenshots
 - Docker build Output
