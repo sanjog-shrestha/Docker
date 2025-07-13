@@ -146,4 +146,10 @@ Purpose: Summary of observable behaviors to confirm everything works.
   <img width="663" height="485" alt="image" src="https://github.com/user-attachments/assets/8b1e56b5-57e1-44c4-a459-ae1979ead03e" />
 
 - Website loaded in browser via HTTPS
+
+  <img width="1913" height="557" alt="image" src="https://github.com/user-attachments/assets/77d0b5b0-c36e-4e7f-9b57-286ee4d333f6" />
+
 - Browser Security Warning (Self-Signed Certificate)
+  
+  <img width="1437" height="875" alt="image" src="https://github.com/user-attachments/assets/a2184737-f623-4fdb-95c6-1a2d2e368f2b" />
+
