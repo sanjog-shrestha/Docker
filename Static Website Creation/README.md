@@ -3,7 +3,7 @@
 
 ## Objective
 
-The objective of this project was to containerize and deploy a simple static HTML/CSS website using Docker and Nginx. The goal was to gain hands-on experience with Dockerfile creation, image building, port binding, and container networking, using a Windows 10 host system. This project provided foundational exposure to container-based application deployment, teaching critical skills in containerization, image management, and lightweight web hosting with Nginx.
+The objective of this project was to containerize and deploy a simple static HTML/CSS website using Docker and Nginx. The goal was to gain hands-on experience with Dockerfile creation, image building, port binding, and container networking, using a Windows 11 host system. This project provided foundational exposure to container-based application deployment, teaching critical skills in containerization, image management, and lightweight web hosting with Nginx.
 By building and running a containerized website, the project aimed to simulate real-world DevOps practices, including infrastructure as code, reproducibility, and portability of web applications.
 
 ### Skills Learned
