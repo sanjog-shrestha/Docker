@@ -125,7 +125,6 @@ Purpose: Where and how the container can be accessed once it's up and running.
 Purpose: Summary of observable behaviors to confirm everything works.
 - ✅ All HTML and CSS loaded correctly
 - ✅ HTTP requests redirected to HTTPS
-- ✅ Accessible from other devices on the same LAN
 - ✅ TLS padlock warning shown (expected with self-signed cert)
 - ✅ Container runs independently and serves content securely
 
@@ -135,6 +134,9 @@ Purpose: Summary of observable behaviors to confirm everything works.
   <img width="1451" height="627" alt="image" src="https://github.com/user-attachments/assets/1ca1874c-06de-4ede-a9d6-6ab64cbe6952" />
 
 - Running Container (docker ps)
+
+  <img width="1881" height="140" alt="image" src="https://github.com/user-attachments/assets/fdce1a0d-a38b-494d-a202-c40e7f6394d7" />
+
 - OpenSSL Certificate Generation
 
   <img width="1890" height="252" alt="image" src="https://github.com/user-attachments/assets/a5769b32-65ca-4152-b10b-6bac3b9a62a9" />
