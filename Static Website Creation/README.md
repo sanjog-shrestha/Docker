@@ -15,60 +15,107 @@ By building and running a containerized website, the project aimed to simulate r
 - Port mapping and container networking
 - Volume management and file copying
 - Localhost web hosting and testing via IP
+- HTTPS with TLS using self-signed certificates
+- Nginx SSL redirection and configuration
 
 ### Tools Used
 
-- Docker Desktop (Windows): <br>
+- Docker Desktop (Windows):
 Used to run the Docker engine on a Windows 10 host machine and manage containers locally.
-- Docker CLI: <br>
+- Docker CLI:
 Utilized to build custom Docker images and run containers with specific configurations (e.g., ports, names, volumes).
-- Nginx (Docker Image): <br>
+- Nginx (Docker Image):
 A lightweight nginx:alpine base image was used to serve the static HTML content inside the container.
-- HTML/CSS: <br>
+- OpenSSL:
+Used to generate self-signed TLS certificates for HTTPS testing locally.
+- HTML/CSS:
 A simple static website was created using basic HTML and inline CSS. The files were copied into the container's /usr/share/nginx/html directory.
-- Windows 11 Host: <br>
-Served as the base platform to run Docker containers. The containerized website was accessed via http://localhost:8080.
+- Windows 11 Host:
+Served as the base platform to run Docker containers. The containerized website was accessed via http://localhost:8080 and https://localhost:8443.
 
 ## Steps
 
-🖥️ Ref 1: Static Website Creation
+## 🖥️ Ref 1: Static Website Creation
 
-<img width="748" height="288" alt="Image" src="https://github.com/user-attachments/assets/3b5650ab-3d97-49f4-a2bb-f0f5a27b67a5" />
+Purpose: This step involved creating the actual HTML and CSS files for the static site that would be served. It focused on content, design, and directory setup.
 
-The project began by creating a simple static website using HTML. This website would later be served inside an Nginx container. The file structure was kept minimal to focus on Docker and Nginx deployment.
+    <!-- html/index.html -->
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>My Static Site</title>
+      <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        h1 { color: #0077cc; }
+      </style>
+    </head>
+    <body>
+      <h1>Hello from Dockerized NGINX with HTTPS!</h1>
+    </body>
+    </html>
 
-🔐 Ref 2: Dockerfile and Image Build
+## 🔐 Ref 2: Dockerfile and Image Build
 
-To containerize the static website, the nginx:alpine base image was used for its small footprint.
+Purpose: This step explains how the Nginx container was configured to serve the static site by writing a Dockerfile. It also shows how the image was built with embedded content and TLS.
 
-📄 Dockerfile:
+    # Dockerfile
+    FROM nginx:alpine
+    
+    COPY html /usr/share/nginx/html
+    COPY nginx.conf /etc/nginx/conf.d/default.conf
+    COPY certs/selfsigned.crt /etc/nginx/certs/selfsigned.crt
+    COPY certs/selfsigned.key /etc/nginx/certs/selfsigned.key
 
-<img width="575" height="152" alt="Image" src="https://github.com/user-attachments/assets/174d018b-1260-435c-8899-a76fc50ce704" />
+    # Build the image
+    docker build -t my-static-site-https .
 
-📦 Build Command:
+## 🔐 Ref 3: Generate Self-Signed TLS Certificate
 
-<img width="1117" height="652" alt="Image" src="https://github.com/user-attachments/assets/aed15cbc-7739-41b1-b5ce-48a624457c4c" />
+Purpose: Demonstrates how to create a local TLS certificate for HTTPS support using OpenSSL. This mimics a production SSL cert while remaining local-dev safe.
 
-This copied the website content into the default Nginx directory /usr/share/nginx/html, creating a deployable image.
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout certs/selfsigned.key \
+    -out certs/selfsigned.crt \
+    -subj "/CN=localhost"
+      
+## ⚙️ Ref 4: Custom NGINX Configuration
 
-🚀 Ref 3: Container Execution
+Purpose: Shows the manual config needed to make Nginx serve both HTTP and HTTPS traffic, redirect HTTP to HTTPS, and load the SSL certificate files.
 
-<img width="1830" height="56" alt="Image" src="https://github.com/user-attachments/assets/805585ea-3221-44a4-8f99-44d1a519a3c4" />
+    # nginx.conf
+    server {
+        listen 80;
+        server_name localhost;
+        return 301 https://$host$request_uri;
+    }
+    
+    server {
+        listen 443 ssl;
+        server_name localhost;
+    
+        ssl_certificate /etc/nginx/certs/selfsigned.crt;
+        ssl_certificate_key /etc/nginx/certs/selfsigned.key;
+    
+        location / {
+            root /usr/share/nginx/html;
+            index index.html;
+        }
+    }
 
-This started a detached container named my-static-site with port mapping from host 8080 to container 80.
-
-📍 Accessible at:
-
-  http://localhost:8080 (from host)
-
-  http://192.168.1.121:8080 (from LAN)
+## Screenshots
+- Docker build Output
   
-📊 Ref 5: Website Results
+  <img width="1451" height="627" alt="image" src="https://github.com/user-attachments/assets/1ca1874c-06de-4ede-a9d6-6ab64cbe6952" />
 
-Once the container was up, the static website became accessible via browser.
+- Running Container (docker ps)
+- OpenSSL Certificate Generation
 
-✔️ All HTML and CSS loaded correctly
-✔️ The site was responsive and viewable from other devices on the LAN
-✔️ Verified that the site runs entirely inside the container
+  <img width="1890" height="252" alt="image" src="https://github.com/user-attachments/assets/a5769b32-65ca-4152-b10b-6bac3b9a62a9" />
 
-<img width="1917" height="472" alt="Image" src="https://github.com/user-attachments/assets/d3be5255-3553-45a0-9912-f09a51ff9435" />
+- nginx.conf File Preview
+
+  <img width="663" height="485" alt="image" src="https://github.com/user-attachments/assets/8b1e56b5-57e1-44c4-a459-ae1979ead03e" />
+
+- Website loaded in browser via HTTPS
+- Browser Security Warning (Self-Signed Certificate)
