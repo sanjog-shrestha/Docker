@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   db: 
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: mysql_db
     restart: always
     environment:
@@ -10,18 +8,29 @@ services:
       MYSQL_DATABASE: sampledb
       MYSQL_USER: user123
       MYSQL_PASSWORD: pass123
-    ports:
+    expose:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-    
-  
+      - ./certs:/etc/mysql/certs
+    command: >
+      --ssl-ca=/etc/mysql/certs/ca.pem
+      --ssl-cert=/etc/mysql/certs/server-cert.pem
+      --ssl-key=/etc/mysql/certs/server-key.pem
+    networks:
+      - backend
   adminer:
     image: adminer
     container_name: adminer_ui
     restart: always
     ports:
       - "8080:8080"
+    networks:
+      - backend
 
 volumes:
   db_data:
+
+networks:
+  backend:
+    driver: bridge
