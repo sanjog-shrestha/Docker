@@ -4,14 +4,18 @@
 
 The objective of this project was to deploy a MySQL database alongside a lightweight web-based database management UI (Adminer) using Docker Compose. The goal was to understand multi-container orchestration, Docker volumes for persistent storage, and container-to-container networking. This project simulates a common real-world setup used for local database development or testing, emphasizing Infrastructure as Code, environment configuration, and service discovery using Docker's internal DNS.
 
+This version of the project also focuses on improving security and network isolation, by enabling SSL/TLS encryption for MySQL and restricting external access using Docker’s custom bridge networks and service exposure control.
+
 ### Skills Learned
 
 - Writing Docker Compose files for multi-service apps
 - Exposing and mapping ports from container to host
-- Configuring MySQL databases with environment variables
+- Configuring MySQL databases with environment variables 
 - Using Docker named volumes for persistent DB data
 - Inter-service communication using Docker network names
 - Testing DB connection using a browser-based Adminer interface
+- Enabling SSL/TLS for secure MySQL connections
+- Implementing container-level network isolation and exposure control
 
 ### Tools Used
 
@@ -20,70 +24,156 @@ Used to run and manage containerized via GUI & CLI
 - Docker Compose:
 Automates multi-container setup & teardown
 - MySQL (Docker Image):
-Relational database container
+Relational database container with SSL enabled
 - Adminer:
 Lightweight database management UI container
+- OpenSSL:
+Used to generate self-signed TLS certificates for MySQL
 - PowerShell:
 Used to interact with Docker CLI
 - Windows 11 Host:
 Host system for running the project locally
 
-## Steps
-🏗️ Ref 1: Compose File Setup
+## 🏗️ Ref 1: Compose File Setup
 
-A docker-compose.yml file was created to define both the MySQL and Adminer services in a single configuration.
+A docker-compose.yml file was created with the following features:
+- Two services: db (MySQL) and adminer
+- Custom Docker bridge network: backend
+- TLS certificates mounted into MySQL container
+- Port mapped only for Adminer (8080); MySQL is isolated
 
-<img width="1557" height="811" alt="Image" src="https://github.com/user-attachments/assets/e2d7dd24-c9a6-4be8-bc4e-c3cbcca002ac" />
+      services:
+        db:
+          image: mysql:8.0
+          container_name: mysql_secure
+          restart: always
+          environment:
+            MYSQL_ROOT_PASSWORD: rootpass
+            MYSQL_DATABASE: sampledb
+            MYSQL_USER: user123
+            MYSQL_PASSWORD: pass123
+          volumes:
+            - mysql_data:/var/lib/mysql
+            - ./certs:/etc/mysql/certs
+          command: >
+            --ssl-ca=/etc/mysql/certs/ca.pem
+            --ssl-cert=/etc/mysql/certs/server-cert.pem
+            --ssl-key=/etc/mysql/certs/server-key.pem
+          networks:
+            - backend
+          expose:
+            - "3306"
+      
+        adminer:
+          image: adminer
+          container_name: adminer_ui
+          restart: always
+          ports:
+            - "8080:8080"
+          networks:
+            - backend
+      
+      volumes:
+        mysql_data:
+      
+      networks:
+        backend:
+          driver: bridge
 
-⚙️ Ref 2: Running the Containers
+## 🔐 Ref 2: Generating MySQL SSL Certificates
 
-The following command was executed from the project root to launch both containers:
+Self-signed TLS certificates were generated using openssl:
 
-<img width="1900" height="680" alt="Image" src="https://github.com/user-attachments/assets/ecbdda89-1c0e-4842-80b2-6c8a0ea932c9" />
+    mkdir certs
+    cd certs
 
-🟢 Result:
-- MySQL service starts at internal port 3306
-- Adminer UI available at http://localhost:8080
+    # Generate private key and save in correct PEM format
+    openssl genpkey -algorithm RSA -out ca-key.pem
+    
+    # Generate a self-signed certificate using the private key
+    openssl req -new -x509 -key ca-key.pem -out ca.pem -days 365 -subj "/CN=MySQL_CA"
+    
+    # Generate server cert
+    openssl req -newkey rsa:2048 -nodes -keyout server-key.pem \
+      -out server-req.pem -subj "/CN=mysql"
+    openssl x509 -req -in server-req.pem -days 365 \
+      -CA ca.pem -CAkey ca-key.pem -set_serial 01 -out server-cert.pem
+      
+## ⚙️ Ref 3: Running the Containers
+From the project root:
 
-🌐 Ref 3: Accessing Adminer
+    docker compose up -d
 
-With Adminer running, it was accessed via browser:
+✅ Services launched:
+- MySQL running with TLS-only connections (require_secure_transport=ON)
+- Adminer accessible on host at http://localhost:8080
+- MySQL not exposed publicly (expose used instead of ports)
 
+
+## 🌐 Ref 4: Accessing Adminer
+
+Open:
 📍 http://localhost:8080
 
-Login Configuration:
+Use these credentials to log in:
 - System: MySQL
-- Server: db (Docker service name, resolved internally)
+- Server: db
 - Username: user123
 - Password: pass123
 - Database: sampledb
 
-📊 Ref 4: Result Verification
+✅ The internal Docker DNS (db) resolved successfully from Adminer.
 
-✅ Successful verification included:
-- Adminer connected to the MySQL container via service name db
+## 📊 Ref 5: Result Verification
+- Adminer successfully connected to MySQL using internal service name
+- Data was created and verified using Adminer’s UI
+- Full CRUD operations performed
+- Volume persistence confirmed: data was not lost after docker compose down && up
+- MySQL only accepted secure SSL connections
 
-  <img width="963" height="490" alt="Image" src="https://github.com/user-attachments/assets/1d4b3b75-d86d-4747-9622-ff37ab61e0dd" />
+## ✅ Outcome
+- Deployed and configured a secure multi-container database stack using Docker Compose
+- TLS encryption enforced for all MySQL connections using self-signed certificates
+- MySQL service was isolated from external networks using Docker’s internal bridge
+- Adminer was securely connected over internal DNS and handled full database operations
+- The architecture is now ready for integration with app containers (Node.js, Flask, etc.)
+- Infrastructure is secure, reproducible, and portable — aligned with modern DevOps practices
 
-  <img width="1915" height="758" alt="Image" src="https://github.com/user-attachments/assets/df4ce70a-6438-44bd-b40f-aa2268cf415d" />
+## 📸 Screenshots
+- docker-compose.yml file showing TLS and networks
 
-- Test tables and entries were created through Adminer UI
-  <img width="1572" height="348" alt="Image" src="https://github.com/user-attachments/assets/000fae2b-422f-4b61-865f-1f76cf27376d" />
+  <img width="712" height="840" alt="image" src="https://github.com/user-attachments/assets/b1c80d67-df98-425b-bc33-c42128f8be98" />
   
-  <img width="1408" height="541" alt="Image" src="https://github.com/user-attachments/assets/e47a9dca-6b80-40be-ae50-f72214b83d1c" />
+- OpenSSL certificate generation output
 
-  <img width="1061" height="623" alt="Image" src="https://github.com/user-attachments/assets/4940c0e9-20ad-4c98-9dda-1d3719454065" />
-  
-- Data persisted across docker-compose down and up (volume verification)
+  <img width="1872" height="202" alt="image" src="https://github.com/user-attachments/assets/af88ffa2-9145-4844-a02a-f66b7ea78277" />
+  <img width="1897" height="325" alt="image" src="https://github.com/user-attachments/assets/2af3f1b2-2899-42e5-bd5b-0d1d2817bf48" />
 
-  ![image](https://github.com/user-attachments/assets/df1d85d6-a44a-4538-8b97-d13b3c0dde8b)
+- PowerShell terminal: docker compose up -d
 
-- Adminer allowed full CRUD operations on the sampledb
+  <img width="1450" height="513" alt="image" src="https://github.com/user-attachments/assets/5a85cc6e-d83b-4a3a-b79f-763b38d19d46" />
 
-✅ Outcome
-- Deployed and configured a basic database stack using Docker Compose.
-- Demonstrated inter-container networking, volume persistence, and service orchestration.
-- Set the stage for future back-end or data-driven projects that rely on relational databases.
-- Built a foundation for integrating MySQL with other containerized services (Node.js, PHP, etc.).
+- docker ps showing both containers running
 
+  <img width="1792" height="152" alt="image" src="https://github.com/user-attachments/assets/eb901c57-4034-45f5-932c-a22c6a2c8b56" />
 
+- Adminer login screen
+
+  <img width="742" height="628" alt="image" src="https://github.com/user-attachments/assets/e1636129-80e2-4b84-96ca-fe1f629b0b30" />
+
+- Adminer dashboard connected to sampledb
+
+  <img width="992" height="767" alt="image" src="https://github.com/user-attachments/assets/5bbf88a4-5b90-4933-a2a5-aef25dbee19e" />
+
+- Table creation and data input
+
+  <img width="960" height="1000" alt="image" src="https://github.com/user-attachments/assets/3ec9841e-9f2d-4d76-9d50-e281766bfc1d" />
+
+- Re-launching containers and verifying data persisted
+
+  <img width="1913" height="375" alt="image" src="https://github.com/user-attachments/assets/217c74ce-baa2-4600-84d4-7946c8b17697" />
+  <img width="910" height="931" alt="image" src="https://github.com/user-attachments/assets/3e9360ac-d1c5-4527-bfe1-75f7a4437951" />
+
+- Adminer TLS-backed connection (MySQL enforcing SSL)
+
+  <img width="637" height="177" alt="image" src="https://github.com/user-attachments/assets/615f2196-34cb-4b9e-be66-67376465c652" />
