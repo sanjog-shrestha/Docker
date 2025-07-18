@@ -165,3 +165,28 @@ The jenkins_home volume ensures full data persistence:
 - Test: Simulated test logs
 - Deploy: Echo deployment command
 - Output available in Jenkins console log and Blue Ocean UI
+
+## 📸 Screenshots
+
+| Step | Description | Image |
+|------|-------------|-------|
+| 1 | HTTPS Jenkins login (`https://localhost:8443`) | ![HTTPS Login](screenshots/login_page.png) |
+| 2 | Terminal output of `docker compose up -d` | ![Compose Up](screenshots/compose_up.png) |
+| 3 | Jenkins dashboard after login | ![Dashboard](screenshots/dashboard.png) |
+| 4 | Pipeline-from-SCM job configuration | ![Pipeline Config](screenshots/SCM.png,SCM1.pnf) |
+| 5 | Console log showing Build → Test → Deploy | ![Console Log](screenshots/Console_log.png) |
+| 6 | Blue Ocean pipeline visualization | ![Blue Ocean](screenshots/blue_ocean.png) |
+| 7 | `docker ps` displaying running containers | ![Docker PS](screenshots/docker_ps.png) |
+
+
+## ✅ Outcome
+- Fully functional, containerized CI/CD pipeline using Jenkins, Docker, and NGINX reverse proxy
+- HTTPS encryption added using self-signed certs
+- .env-based configuration enables modular, portable deployments
+- Pipeline-as-Code enabled through external Jenkinsfile from SCM
+- Real-world DevOps environment simulating enterprise-grade workflows
+- Foundation ready for future CI/CD integrations, secure secrets, and cloud-native deployment targets
+
+
+
+
