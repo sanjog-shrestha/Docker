@@ -32,145 +32,136 @@ The objective of this project was to deploy a lightweight, fully containerized C
 - Windows 11 Host:
   Host system for executing the entire CI/CD stack locally
 
-🧱 Ref 1: Compose File Setup
+## 🧱 Ref 1: Compose File Setup
 
 A docker-compose.yml file was created to define the Jenkins, Docker-in-Docker (DinD), and NGINX services. TLS certificates were mounted into NGINX, and Docker socket was shared with Jenkins. Environment variables were abstracted into a .env file.
+
 📄 .env
 
-JENKINS_IMAGE=jenkins/jenkins:lts
-NGINX_IMAGE=nginx:alpine
-JENKINS_PORT_HTTP=8080
-JENKINS_PORT_HTTPS=8443
-JENKINS_AGENT_PORT=50000
-JENKINS_VOLUME=jenkins_home
+    JENKINS_IMAGE=jenkins-docker
+    NGINX_IMAGE=nginx:alpine
+    JENKINS_PORT_HTTP=8080
+    JENKINS_PORT_HTTPS=8443
+    JENKINS_AGENT_PORT=50000
+    JENKINS_VOLUME=jenkins_home
 
 📦 docker-compose.yml
 
-version: '3.8'
-
-services:
-  dind:
-    image: docker:dind
-    container_name: dind
-    privileged: true
-    networks:
-      - jenkins
-    environment:
-      DOCKER_TLS_CERTDIR: ""
-
-  jenkins:
-    image: ${JENKINS_IMAGE}
-    container_name: jenkins
-    user: root
-    ports:
-      - "${JENKINS_PORT_HTTP}:8080"
-      - "${JENKINS_AGENT_PORT}:50000"
+    services:
+      dind:
+        image: docker:dind
+        container_name: dind
+        privileged: true
+        networks:
+          - jenkins
+        environment:
+          DOCKER_TLS_CERTDIR: ""
+      
+      jenkins:
+        image: ${JENKINS_IMAGE}
+        container_name: jenkins
+        user: root
+        ports:
+          - "${JENKINS_PORT_HTTP}:8080"
+          - "${JENKINS_AGENT_PORT}:50000"
+        volumes:
+          - ${JENKINS_VOLUME}:/var/jenkins_home
+          - /var/run/docker.sock:/var/run/docker.sock
+        depends_on:
+          - dind
+        networks:
+          - jenkins
+    
+      nginx:
+        image: ${NGINX_IMAGE}
+        container_name: jenkins-nginx
+        ports:
+          - "${JENKINS_PORT_HTTPS}:443"
+        volumes:
+          - ./nginx.conf:/etc/nginx/nginx.conf:ro
+          - ./certs:/etc/nginx/certs:ro
+        depends_on:
+          - jenkins
+        networks:
+          - jenkins
+    
+    
     volumes:
-      - ${JENKINS_VOLUME}:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - dind
+      jenkins_home:
+    
     networks:
-      - jenkins
+      jenkins:
 
-  nginx:
-    image: ${NGINX_IMAGE}
-    container_name: jenkins-nginx
-    depends_on:
-      - jenkins
-    ports:
-      - "${JENKINS_PORT_HTTPS}:443"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./certs:/etc/nginx/certs:ro
-    networks:
-      - jenkins
-
-volumes:
-  jenkins_home:
-
-networks:
-  jenkins:
-
-⚙️ Ref 2: Running the Container
-
+## ⚙️ Ref 2: Running the Container
 Project launched using:
 
-docker compose up -d
+    docker compose up -d
 
 ✅ Services started successfully:
+- Jenkins UI served via: https://localhost:8443
+- Docker-in-Docker available for container builds
+- Jenkins data persisted in jenkins_home volume
 
-    Jenkins UI served via: https://localhost:8443
-
-    Docker-in-Docker available for container builds
-
-    Jenkins data persisted in jenkins_home volume
-
-🌐 Ref 3: Accessing Jenkins
+## 🌐 Ref 3: Accessing Jenkins
 
 Web interface accessed via HTTPS:
 📍 https://localhost:8443
 
 🔐 Retrieve the default admin password:
 
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+    docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 🔐 After login, password was changed and suggested plugins were installed.
-🔁 Ref 4: Creating Pipeline from SCM
+
+## 🔁 Ref 4: Creating Pipeline from SCM
 
 Instead of pasting a Jenkinsfile manually, the pipeline was configured using Pipeline from SCM with Git.
 A sample Jenkinsfile was committed to a GitHub repo and linked through the Jenkins job UI.
 Sample Jenkinsfile
-
-pipeline {
-  agent any
-  stages {
-    stage('Build') {
-      steps {
-        sh 'echo Building Docker container...'
-        sh 'docker --version'
+    
+    pipeline {
+      agent any
+      stages {
+        stage('Build') {
+          steps {
+            sh 'echo Building Docker container...'
+            sh 'docker --version'
+          }
+        }
+        stage('Test') {
+          steps {
+            sh 'echo Running tests...'
+          }
+        }
+        stage('Deploy') {
+          steps {
+            sh 'echo Deploying application...'
+          }
+        }
       }
     }
-    stage('Test') {
-      steps {
-        sh 'echo Running tests...'
-      }
-    }
-    stage('Deploy') {
-      steps {
-        sh 'echo Deploying application...'
-      }
-    }
-  }
-}
 
 ✅ Jenkins automatically fetched the Jenkinsfile and executed pipeline stages from the repo.
-🔐 Ref 5: Jenkins Authentication & Secrets
 
-    Default admin password was retrieved securely via CLI
+## 🔐 Ref 5: Jenkins Authentication & Secrets
+- Default admin password was retrieved securely via CLI
+- Manual password reset enforced after first login
+- No credentials or tokens hardcoded in Dockerfiles or Compose files
+- HTTPS secured using self-signed certificate via NGINX proxy
 
-    Manual password reset enforced after first login
-
-    No credentials or tokens hardcoded in Dockerfiles or Compose files
-
-    HTTPS secured using self-signed certificate via NGINX proxy
-
-📦 Ref 6: Persistent Volumes & Restarts
+## 📦 Ref 6: Persistent Volumes & Restarts
 
 The jenkins_home volume ensures full data persistence:
 
-docker compose down
-docker compose up -d
+    docker compose down
+    docker compose up -d
 
 ✅ No loss of jobs, credentials, plugins, or build history across restarts.
-🧪 Ref 7: CI/CD Pipeline Execution Output
+
+## 🧪 Ref 7: CI/CD Pipeline Execution Output
 
 ✅ Verified Output:
-
-    Build: Docker CLI checked inside Jenkins container
-
-    Test: Simulated test logs
-
-    Deploy: Echo deployment command
-
-    Output available in Jenkins console log and Blue Ocean UI
+- Build: Docker CLI checked inside Jenkins container
+- Test: Simulated test logs
+- Deploy: Echo deployment command
+- Output available in Jenkins console log and Blue Ocean UI
