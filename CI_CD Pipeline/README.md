@@ -170,10 +170,10 @@ The jenkins_home volume ensures full data persistence:
 
 | Step | Description | Image |
 |------|-------------|-------|
-| 1 | HTTPS Jenkins login (`https://localhost:8443`) | ![HTTPS Login](screenshots/login_page.png) |
+| 1 | HTTPS Jenkins login (`https://localhost:8443`) | [View Screenshot](screenshots/login_page.png) |
 | 2 | Terminal output of `docker compose up -d` | ![Compose Up](screenshots/compose_up.png) |
 | 3 | Jenkins dashboard after login | ![Dashboard](screenshots/dashboard.png) |
-| 4 | Pipeline-from-SCM job configuration | ![Pipeline Config](screenshots/SCM.png,SCM1.pnf) |
+| 4 | Pipeline-from-SCM job configuration | ![Pipeline Config](screenshots/SCM1.png) |
 | 5 | Console log showing Build → Test → Deploy | ![Console Log](screenshots/Console_log.png) |
 | 6 | Blue Ocean pipeline visualization | ![Blue Ocean](screenshots/blue_ocean.png) |
 | 7 | `docker ps` displaying running containers | ![Docker PS](screenshots/docker_ps.png) |
