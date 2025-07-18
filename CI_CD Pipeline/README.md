@@ -2,31 +2,37 @@
 
 ## Objective
 
-The objective of this project was to deploy a lightweight, fully containerized CI/CD system using Jenkins on Docker Compose. The setup demonstrates how to orchestrate Jenkins and Docker-in-Docker (DinD) services to automate build, test, and deploy pipelines. This mimics a professional DevOps workflow, making it ideal for learning and showcasing modern software delivery techniques on a local Windows environment.
+The objective of this project was to deploy a lightweight, fully containerized CI/CD system using Jenkins on Docker Compose. This enhanced setup introduces HTTPS with a self-signed certificate using an NGINX reverse proxy, externalized environment variables via a .env file, and pipeline-as-code through a Jenkinsfile sourced from SCM. These upgrades replicate modern production CI/CD pipelines and promote security, modularity, and maintainability on a local Windows environment.
 
 ### Skills Learned
 
 - Writing modular docker-compose.yml files to run multi-container CI systems
-- Configuring Docker-in-Docker for pipeline container builds
-- Mounting Docker socket for container interaction inside Jenkins
-- Creating pipeline jobs with Groovy Jenkinsfile syntax
-- Securing and initializing Jenkins via CLI and UI
-- Using Jenkins to automate builds inside a containerized setup
+- Configuring Docker-in-Docker (DinD) for building Docker images within pipelines
+- Using NGINX as a reverse proxy to enable HTTPS for Jenkins UI
+- Mounting Docker socket for Jenkins container access to the host Docker daemon
+- Creating Groovy-based pipeline-as-code using Jenkinsfile
+- Securing Jenkins with TLS, CLI secrets, and controlled admin initialization
+- Persisting Jenkins data using Docker named volumes
+- Integrating SCM-based pipelines for GitOps-style automation
 
 ### Tools Used
 
 - Docker Desktop (Windows):
   Run and manage containerized services with CLI & GUI
 - Docker Compose:
-  Defined multi-container environments for Jenkins and DinD
+  Defined multi-container environments for Jenkins, DinD, & NGINX
 - Jenkins (Docker image):
   Core CI/CD server
 - docker:dind (Docker-in-Docker):
-  Used to allow Jenkins to build Docker images from within containers
+  Allows Jenkins to build Docker images from within containers
+- NGINX:
+  Revese proxy to enable HTTPS (SSL/TLS)
+- OpenSSL:
+  For generating self-signed certificates
 - PowerShell:
   Used to execute Docker CLI commands
 - Windows 11 Host:
-  Used as the host OS for the project execution
+  Host system for executing the entire CI/CD stack locally
 
 ## Steps
 
