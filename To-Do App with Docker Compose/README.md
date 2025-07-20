@@ -3,88 +3,144 @@
 
 ## Objective
 
-The objective of this project was to containerize and deploy a basic full-stack application using Docker Compose, consisting of a Node.js (Express) backend and a MongoDB database. The goal was to gain practical experience in managing multi-container applications, linking services, using persistent volumes, and working with Docker networking on a Windows 10/11 host machine. This project simulates real-world DevOps workflows where services are deployed in isolated, reproducible containers that communicate via Docker's internal network. It demonstrates the principles of Infrastructure as Code, service orchestration, and container lifecycle management using docker-compose.
+The objective of this project was to deploy a containerized full-stack application using Docker Compose, consisting of a Node.js (Express) backend and a MongoDB database. The project demonstrates multi-container orchestration, container-to-container networking, Docker volume persistence, and RESTful API exposure on a local Windows environment. This setup simulates real-world microservice design and is enhanced with production-ready features such as .env config, health checks, logging, and a reverse proxy entry point for future frontend expansion.
 
 ### Skills Learned
 
-- Docker Compose syntax and multi-container configuration
-- Building Docker images with Dockerfiles
-- Service-to-service communication via Docker networks
-- Persistent volume setup for MongoDB
-- Environment variable usage for container configuration
-- Running REST APIs in isolated containers
-- API testing using curl, Postman, or browser
+- Writing Docker Compose files for service orchestration
+- Building custom Docker images from Dockerfiles
+- Service discovery and inter-container networking
+- Environment variable config via .env file
+- Persistent data storage using Docker volumes
+- API testing using Postman and PowerShell
+- Logging, health checks, and production hardening
 
 ### Tools Used
 
-- Docker Desktop (Windows):
-Used to run and manage containerized services on a Windows machine.
-- Docker CLI & Docker Compose:
-Utilized to build images, spin up containers, and orchestrate multi-service applications.
-- Node.js (Express):
-A lightweight backend framework used to create the to-do API.
-- MongoDB (Docker Image):
-Acts as the data store for the to-do application.
-- PowerShell (Invoke-RestMethod):
-Used to test the REST API endpoints directly from the Windows host:
-- Windows 11 Host:
-Base platform to run Docker containers and access exposed APIs on http://localhost.
+- Docker Desktop (Windows): <br>
+Container engine and management UI
+- Docker CLI & Docker Compose: <br>
+Build, orchestrate, and monitor services
+- Node.js (Express): <br>
+Backend API server
+- MongoDB (Docker Image): <br>
+NoSQL database for persistent task storage
+- PowerShell (Invoke-RestMethod): <br>
+API endpoint testing
 
 ## Steps
 
-🛠️ Ref 1: Backend App Creation
+## 📁 Ref 1: Project Structure
 
-The project started by building a basic Express.js backend for managing to-do items. It connects to MongoDB, exposes two routes (/todos GET & POST), and uses Mongoose for database operations.
+    todo-app/
+    ├── backend/
+    │   ├── Dockerfile
+    │   └── index.js
+    ├── docker-compose.yml
+    ├── .env
+    └── README.md
 
-⚙️ Ref 2: Dockerfile and Image Build
 
-To containerize the backend app, a custom Dockerfile was created.
+## 🧱 Ref 2: Compose File Setup
 
-📄 backend/Dockerfile:
+    services:
+      api:
+        build: ./backend
+        container_name: todo-api
+        ports:
+          - "${APP_PORT}:3000"
+        environment:
+          - MONGO_URL=mongodb://mongo:27017/tododb
+        depends_on:
+          - mongo
+        networks:
+          - todo-net
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:3000/todos"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+    
+      mongo:
+        image: mongo:latest
+        container_name: todo-mongo
+        restart: always
+        volumes:
+          - mongo-data:/data/db
+        networks:
+          - todo-net
+    
+    networks:
+      todo-net:
+    
+    volumes:
+      mongo-data:
 
-![Image](https://github.com/user-attachments/assets/5419ab9f-4d56-4fdc-baff-fbb7114b77da)
+## 📄 Ref 3: Backend Dockerfile
 
-🧩 Ref 3: Docker Compose Orchestration
+    FROM node:18-alpine
+    
+    WORKDIR /app
+    
+    COPY package*.json ./
+    RUN npm install
+    
+    COPY . .
+    
+    EXPOSE 3000
+    
+    CMD ["node", "index.js"]
 
-docker-compose.yml was created to spin up both the backend and the mongo services.
+## 🌐 Ref 4: Environment Configuration
 
-📄 docker-compose.yml:
+.env file:
 
-![image](https://github.com/user-attachments/assets/2c4b52a5-2e01-4f3b-8a70-74fe0de028df)
+    APP_PORT=3000
 
-✅ This setup allows the backend container to connect to the mongo service via hostname mongo.
+## 🔐 Ref 5: API Functionality
+- GET /todos — Fetch all tasks
+- POST /todos — Create new task (JSON body)
+- Data stored in MongoDB container todo-mongo
+- Accessible via: http://localhost:3000/todos
 
-🚀 Ref 4: Running the App
-To launch the full application, the following command was executed from the project root:
+## 🧪 Ref 6: Sample API Test (PowerShell)
 
-![Image](https://github.com/user-attachments/assets/856d8eb8-f27e-4491-bb3e-f9b207566a92)
+    Invoke-RestMethod -Uri http://localhost:3000/todos -Method GET
+    Invoke-RestMethod -Uri http://localhost:3000/todos -Method POST -Body (@{task="Write docs"} | ConvertTo-Json) -ContentType "application/json"
 
-Result:
+## 🔁 Ref 7: Service Lifecycle & Restart
 
-- Node backend running at: http://localhost:3000
-- MongoDB running internally at: mongo:27017
+Containers are started via:
 
-🔍 Ref 5: API Testing
+    docker-compose up -d
 
-📍 Accessible Endpoints:
+Persistent volume ensures MongoDB retains data even after:
 
-- GET http://localhost:3000/todos — fetches all todos.
-- POST http://localhost:3000/todos — creates a new todo.
+    docker-compose down
+    docker-compose up -d
 
-Test Example
-![Image](https://github.com/user-attachments/assets/fb9e6b5e-1645-495e-9ca9-88d725d820f7)
+## 📊 Ref 8: Logging and Debugging
+- docker logs todo-api – Inspect API output
+- docker logs todo-mongo – View database logs
+- Logs routed to Docker console by default (can be extended to fluentd or file mounts)js + MongoDB app using Docker Compose.
 
-![Image](https://github.com/user-attachments/assets/8e65c3e9-e5c5-4de6-a743-0e787db33477)
+## 🧑‍💻 Ref 9: Project Screenshots 
 
-📊 Ref 6: Result Verification
+| Step | Description | Screenshot |
+|------|-------------|------------|
+| 1 | Running API from Compose | [View](screenshots/compose_up.png) |
+| 2 | Testing `/todos` endpoint via PowerShell | [View](screenshots/powershell_test.png) |
+| 3 | API output showing persisted entries | [View](screenshots/api_response.png) |
+| 4 | Docker containers running | [View](screenshots/docker_ps.png) |
+| 5 | MongoDB volume reuse verification | [View](screenshots/volume_check.png) |
 
-Once containers were running:
-- API requests were successfully served from the backend
-- Todos were saved and retrieved from the MongoDB container
-- Data persisted via Docker volume even after stopping containers
-- Verified container communication and port exposure
-
-✅ Outcome
-- Successfully containerized and deployed a multi-tier Node.js + MongoDB app using Docker Compose.
-- Demonstrated inter-container communication, persistent storage, and local development best practices.
-- Built a strong foundation for future full-stack Docker projects, and set the stage for frontend integration or cloud deployment.
+## ✅ Outcome
+- Successfully containerized a full-stack backend with persistent storage
+- Verified service-to-service communication over Docker network
+- Used PowerShell to simulate realistic API testing workflows
+- Adopted production-grade features:
+  - Environment variables 
+  - Health checks
+  - Volume persistence
+  - Docker logs
+- Ready to integrate NGINX frontend proxy, CI/CD pipelines, or deployment to a cloud container service
