@@ -128,11 +128,11 @@ Persistent volume ensures MongoDB retains data even after:
 
 | Step | Description | Screenshot |
 |------|-------------|------------|
-| 1 | Running API from Compose | [View](screenshots/compose_up.png) |
-| 2 | Testing `/todos` endpoint via PowerShell | [View](screenshots/powershell_test.png) |
-| 3 | API output showing persisted entries | [View](screenshots/api_response.png) |
-| 4 | Docker containers running | [View](screenshots/docker_ps.png) |
-| 5 | MongoDB volume reuse verification | [View](screenshots/volume_check.png) |
+| 1 | Running API from Compose | [View](Screenshots/compose_up.png) |
+| 2 | Testing `/todos` endpoint via PowerShell | [View](Screenshots/powershell_test.png) |
+| 3 | API output showing persisted entries | [View](Screenshots/api_response.png) |
+| 4 | Docker containers running | [View](Screenshots/docker_ps.png) |
+| 5 | MongoDB volume reuse verification | [View](Screenshots/volume_check.png) |
 
 ## ✅ Outcome
 - Successfully containerized a full-stack backend with persistent storage
