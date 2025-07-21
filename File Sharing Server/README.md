@@ -2,87 +2,107 @@
 
 ## Objective
 
-The objective of this project was to deploy a lightweight file-sharing web application using FileBrowser, enabling users to browse, upload, download, and manage files from a web UI. The project emphasizes multi-container orchestration, persistent storage via Docker volumes, and secure access control. The setup simulates real-world NAS/file-server use cases and is ideal for local or remote file access in personal or small team environments.
+The objective of this project was to deploy a lightweight, fully containerized file-sharing web application using FileBrowser via Docker Compose. This enhanced setup introduces HTTPS with a self-signed certificate using an NGINX reverse proxy, environment-based secrets management, persistent data volumes, and automated file backups. The configuration replicates secure NAS/file-server use cases for local or small team environments running on a Windows 11 host.
 
 ### Skills Learned
 
-- Writing clean and modular docker-compose.yml for service configuration
-- Mounting Windows host directories into container as persistent volumes
-- Exposing web interfaces with Docker port mapping
-- Managing user roles & access control in containerized environments
-- Interacting with Docker volumes for long-term data storage
-- Testing & verifying secure file access over a browser UI
+- Writing modular docker-compose.yml files for multi-container environments
+- Using NGINX as a reverse proxy to enable HTTPS for web UI access
+- Mounting Windows host directories into containers as persistent Docker volumes
+- Securing credentials using .env files and removing default hardcoded secrets
+- Writing shell scripts for backing up mounted file storage volumes
+- Adding health checks and restart policies to ensure container uptime
+- Validating secure browser access to containerized services
 
 ### Tools Used
 
-- Docker Desktop (Windows):
-Used to run and manage containerized via GUI & CLI
-- Docker Compose:
-- FileBrowser(Docker Image):
-  Lightwright file-sharing & file-management container
-- PowerShell:
-Used to interact with Docker CLI
-- Windows 11 Host:
-Host system for running the project locally
-
+- Docker Desktop (Windows 11):<br>
+  Run and manage containers
+- Docker Compose: <br>
+  Define and orchestrate multi-container services
+- FileBrowser: <br>
+  Lightweight file manager (Dockerized)
+- NGINX: <br>
+  Reverse proxy for HTTPS termination
+- OpenSSL: <br>
+  Generate self-signed TLS certificates
+- PowerShell & Bash: <br>
+  CLI automation and backup scripting
+- .env file: <br>
+  Externalize configuration and secrets
+  
 ## Steps
-🏗️ Ref 1: Compose File Setup
 
-A docker-compose.yml file was created to define the FileBrowser service, with a persistent volume and mapped file directory on the Windows host:
+🧱 Ref 1: Compose File Setup
 
-<img width="687" height="437" alt="image" src="https://github.com/user-attachments/assets/e288f9be-7f69-4cbe-bda8-483a90ee40bc" />
+A docker-compose.yml file was created to define FileBrowser and NGINX services. TLS certs were mounted into NGINX, host file volume was mounted into FileBrowser, and secrets were managed using an .env file.
 
-📁 The host directory SharedFiles was created to store files shared through FileBrowser.
-⚙️ Ref 2: Running the Container
+📄 .env
 
-Executed the following command from the project root directory:
+    FILEBROWSER_IMAGE=filebrowser/filebrowser
+    NGINX_IMAGE=nginx:alpine
+    FB_PORT_HTTP=8080
+    FB_PORT_HTTPS=8443
+    FB_ADMIN_USER=admin
+    FB_ADMIN_PASS=StrongPassword123!
 
-<img width="1457" height="512" alt="image" src="https://github.com/user-attachments/assets/9d6a72c0-45e0-4393-9955-c376ac4628a1" />
+📦 docker-compose.yml
 
-🟢 Result:
-- FileBrowser service launched and was accessible at http://localhost:8080.
-
-🌐 Ref 3: Accessing FileBrowser
-
-The web interface was accessed at:
-
-📍 http://localhost:8080
-
-🔐 Default Login:
-- Username: admin
-- Password: randomly generated (uvdMTj-p7IFKUL1m) in this case
-
-⚠️ The password was changed immediately after login to enhance security.
-📂 Ref 4: File Operations & Access Control
-
-✅ Successful verification included:
-- Uploading, downloading, renaming, and deleting files/folders
-
-  <img width="1917" height="962" alt="image" src="https://github.com/user-attachments/assets/6f6a5aec-5385-4069-849f-b8a3c3ddc3ae" />
-
-  <img width="1918" height="891" alt="image" src="https://github.com/user-attachments/assets/803280dd-fd62-4b42-b551-b611d7c967cd" />
-
-- Creating new directories inside /srv
-
-  <img width="1917" height="928" alt="image" src="https://github.com/user-attachments/assets/9f0d6ab3-5109-4982-8324-fc2e38283658" />
-
-  <img width="1851" height="772" alt="image" src="https://github.com/user-attachments/assets/146c1167-a724-4011-b0fe-7a5c6b727690" />
+    services:
+      filebrowser:
+        image: ${FILEBROWSER_IMAGE}
+        container_name: filebrowser
+        volumes:
+          - ./SharedFiles:/srv
+          - ./filebrowser.db:/database/filebrowser.db
+          - ./filebrowser.json:/config/settings.json
+        environment:
+          - FB_USERNAME=${FB_ADMIN_USER}
+          - FB_PASSWORD=${FB_ADMIN_PASS}
+        healthcheck:
+          test: ["CMD", "curl", "-f", "http://localhost:8080"]
+          interval: 30s
+          timeout: 10s
+          retries: 3
+        restart: unless-stopped
     
-- Role-based user management (added new users with limited access)
+      nginx:
+        image: ${NGINX_IMAGE}
+        container_name: filebrowser-nginx
+        ports:
+          - "${FB_PORT_HTTPS}:443"
+        volumes:
+          - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+          - ./nginx/certs:/etc/nginx/certs:ro
+        depends_on:
+          - filebrowser
+        restart: unless-stopped
 
-  <img width="713" height="793" alt="image" src="https://github.com/user-attachments/assets/975da171-7c47-4119-9274-54a70bfba25a" />
+## 🔐 Ref 2: Enabling HTTPS via Reverse Proxy
 
+Self-signed TLS certificates were generated using OpenSSL and mounted into NGINX.
 
-- File permissions applied per-user
+✅ TLS Certificate Generation
 
-  <img width="1918" height="821" alt="image" src="https://github.com/user-attachments/assets/85f3d430-c6ed-4ec7-9e00-62050c85917b" />
+    mkdir -p nginx/certs
+    openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+      -keyout nginx/certs/file.local.key \
+      -out nginx/certs/file.local.crt \
+      -subj "/C=UK/ST=London/L=London/O=DevSec/CN=file.local"
 
-  <img width="1917" height="867" alt="image" src="https://github.com/user-attachments/assets/f9c89d90-d4c7-46a1-800b-176f81ec6f42" />
+✅ NGINX Configuration (nginx/nginx.conf)
 
-- The mounted volume persisted data across container restarts
-
-  <img width="1472" height="336" alt="image" src="https://github.com/user-attachments/assets/2fa3431a-2d30-4e7b-a087-22e1bd577f0c" />
-
-  <img width="1918" height="882" alt="image" src="https://github.com/user-attachments/assets/a9ff7ac6-7a3a-4dba-b922-ab22b57d9200" />
-
+    server {
+        listen 443 ssl;
+        server_name file.local;
+    
+        ssl_certificate /etc/nginx/certs/file.local.crt;
+        ssl_certificate_key /etc/nginx/certs/file.local.key;
+    
+        location / {
+            proxy_pass http://filebrowser:8080;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+    }
 
