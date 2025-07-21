@@ -163,9 +163,9 @@ Built-in Docker health check added to FileBrowser service. Ensures container sel
 
 | Step | Description | Image |
 |------|-------------|-------|
-| 1 | HTTPS Jenkins login (`https://localhost:8443`) | [Login Page](screenshots/login_page.png) |
+| 1 | HTTPS FileBrowser login (https://file.local:8443)| [Login Page](screenshots/login_page.png) |
 | 2 | Terminal output of `docker compose up -d` | [Compose Up](screenshots/compose_up.png) |
-| 3 | Jenkins dashboard after login | [Dashboard](screenshots/dashboard.png) |
+| 3 | FileBrowser dashboard after login | [Dashboard](screenshots/dashboard.png) |
 | 4 | Pipeline-from-SCM job configuration | [Pipeline Config](screenshots/SCM1.png) |
 | 5 | Pipeline-from-SCM job configuration  | [Pipeline Config Continued](screenshots/SCM2.png) |
 | 6 | Console log showing Build → Test → Deploy | [Console Log](screenshots/Console_log.png) |
