@@ -52,19 +52,23 @@ A docker-compose.yml file was created to define FileBrowser and NGINX services. 
       filebrowser:
         image: ${FILEBROWSER_IMAGE}
         container_name: filebrowser
+        ports:
+          - "${FB_PORT_HTTP}:80"
         volumes:
           - ./SharedFiles:/srv
-          - ./filebrowser.db:/database/filebrowser.db
-          - ./filebrowser.json:/config/settings.json
+          - ./filebrowser-data:/database
         environment:
           - FB_USERNAME=${FB_ADMIN_USER}
           - FB_PASSWORD=${FB_ADMIN_PASS}
+        networks:
+          - default
         healthcheck:
-          test: ["CMD", "curl", "-f", "http://localhost:8080"]
+          test: ["CMD", "curl", "-f", "http://localhost"]
           interval: 30s
           timeout: 10s
           retries: 3
         restart: unless-stopped
+      
     
       nginx:
         image: ${NGINX_IMAGE}
@@ -72,11 +76,14 @@ A docker-compose.yml file was created to define FileBrowser and NGINX services. 
         ports:
           - "${FB_PORT_HTTPS}:443"
         volumes:
-          - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-          - ./nginx/certs:/etc/nginx/certs:ro
+          - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+          - ./nginx/certs:/etc/nginx/certs:ro 
         depends_on:
           - filebrowser
+        networks:
+          - default
         restart: unless-stopped
+      
 
 ## 🔐 Ref 2: Enabling HTTPS via Reverse Proxy
 
